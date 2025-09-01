@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Prompt Architect v2.0</title>
+    <title>AI Prompt Architect v2.1</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
 
@@ -353,7 +353,6 @@
             const generateBtn = document.getElementById('generateBtn');
             const surpriseBtn = document.getElementById('surpriseBtn');
             const historyContainer = document.getElementById('historyContainer');
-            const selects = document.querySelectorAll('select');
             
             let promptHistory = [];
 
@@ -404,7 +403,6 @@
                 const useCoT = document.getElementById('chainOfThought').checked;
 
                 if (!topic) {
-                    // Using a custom message box instead of alert()
                     const historyItem = document.createElement('div');
                     historyItem.className = 'history-item';
                     const pre = document.createElement('pre');
@@ -440,6 +438,7 @@
             generateBtn.addEventListener('click', generatePrompt);
 
             surpriseBtn.addEventListener('click', () => {
+                const selects = document.querySelectorAll('select');
                 selects.forEach(select => {
                     const randomIndex = Math.floor(Math.random() * select.options.length);
                     select.selectedIndex = randomIndex;
