@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Prompt Architect v2.0</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
+        :root {
+            --bg-gradient: linear-gradient(135deg, #021027 0%, #04293A 50%, #083D56 100%);
+            --card-bg: rgba(12, 122, 148, 0.1);
+            --border-color: rgba(117, 221, 221, 0.2);
+            --text-primary: #e0f7fa;
+            --text-secondary: #b0bec5;
+            --glow-color-1: #00e5ff;
+            --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --input-bg: rgba(12, 122, 148, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 40px 20px;
+            color: var(--text-primary);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            text-align: center;
+        }
+
+        header {
+            margin-bottom: 40px;
+            animation: fadeIn 1s ease-out;
+        }
+
+        h1 {
+            font-size: 2.8em;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--text-primary);
+        }
+
+        .subtitle {
+            font-size: 1.1em;
+            color: var(--text-secondary);
+            margin-top: 10px;
+        }
+
+        .prompt-builder {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: left;
+            backdrop-filter: blur(10px);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 0.9em;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        select, textarea {
+            width: 100%;
+            padding: 12px;
+            font-size: 1em;
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            outline: none;
+            transition: all 0.3s ease;
+            font-family: var(--font-family);
+        }
+
+        select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2300e5ff%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat;
+            background-position: right 15px top 50%;
+            background-size: .65em auto;
+        }
+        
+        select option {
+            background: #083D56;
+            color: var(--text-primary);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        select:focus, textarea:focus {
+            border-color: var(--glow-color-1);
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.3);
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+        
+        .advanced-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .toggle-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .toggle-group label {
+            margin: 0;
+            font-size: 0.9em;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            font-size: 1.1em;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: var(--glow-color-1);
+            color: #021027;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.5);
+        }
+        
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--glow-color-1);
+            border: 2px solid var(--glow-color-1);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--glow-color-1);
+            color: #021027;
+        }
+
+        .history-container {
+            margin-top: 30px;
+        }
+        
+        .history-item {
+            background: rgba(0,0,0,0.2);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            padding: 20px;
+            position: relative;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .history-item pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-size: 0.95em;
+            line-height: 1.7;
+            color: var(--text-secondary);
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .copy-btn:hover {
+            background: var(--glow-color-1);
+            color: #021027;
+        }
+        
+        footer {
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        footer a {
+            color: var(--glow-color-1);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        footer a:hover {
+            text-shadow: 0 0 10px var(--glow-color-1);
+        }
+
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    
+    <div class="container">
+        <header>
+            <h1>AI Prompt Architect</h1>
+            <p class="subtitle">Structure your requests for better, more reliable outputs from any LLM.</p>
+        </header>
+
+        <div class="prompt-builder">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="persona">Persona</label>
+                    <select id="persona">
+                        <option value="Act as a seasoned Chief Marketing Officer">CMO</option>
+                        <option value="Act as a data-driven DevOps Engineer">DevOps Engineer</option>
+                        <option value="Act as a skeptical but fair journalist">Journalist</option>
+                        <option value="Act as an enthusiastic UX Researcher">UX Researcher</option>
+                        <option value="Act as a detail-oriented Product Manager">Product Manager</option>
+                        <option value="Act as a visionary screenwriter">Screenwriter</option>
+                        <option value="Act as an AI Ethicist">AI Ethicist</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="task">Task</label>
+                    <select id="task">
+                        <option value="Your task is to write">Write</option>
+                        <option value="Your task is to summarize">Summarize</option>
+                        <option value="Your task is to create a strategic plan for">Create a Plan</option>
+                        <option value="Your task is to analyze the pros and cons of">Analyze Pros & Cons</option>
+                        <option value="Your task is to explain in simple terms">Explain Simply</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="format">Format</label>
+                    <select id="format">
+                        <option value="Provide the output as a concise email.">Email</option>
+                        <option value="Provide the output as a well-structured markdown document.">Markdown</option>
+                        <option value="Provide the output as a JSON object.">JSON</option>
+                        <option value="Provide the output as a simple bulleted list.">Bulleted List</option>
+                        <option value="Provide the output as a table.">Table</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="tone">Tone</label>
+                    <select id="tone">
+                        <option value="Use a professional and formal tone.">Professional</option>
+                        <option value="Use a casual and conversational tone.">Casual</option>
+                        <option value="Use a direct and assertive tone.">Direct & Assertive</option>
+                        <option value="Use a witty and humorous tone.">Witty</option>
+                        <option value="Use a skeptical and critical tone.">Skeptical</option>
+                    </select>
+                </div>
+                <div class="form-group full-width">
+                    <label for="topic">Topic / Query</label>
+                    <textarea id="topic" placeholder="e.g., The impact of Generative AI on B2B marketing funnels..."></textarea>
+                </div>
+                <div class="form-group full-width">
+                    <label for="constraints">Constraints</label>
+                    <textarea id="constraints" placeholder="e.g., Limit response to 300 words. Avoid marketing jargon..."></textarea>
+                </div>
+            </div>
+            
+            <div class="advanced-options">
+                 <div class="toggle-group">
+                    <input type="checkbox" id="chainOfThought" style="height: 18px; width: 18px;">
+                    <label for="chainOfThought">Use "Chain of Thought" Reasoning</label>
+                </div>
+                <button id="surpriseBtn" class="btn btn-secondary">Surprise Me</button>
+            </div>
+            
+            <div class="button-container">
+                <button id="generateBtn" class="btn btn-primary">Generate Prompt</button>
+            </div>
+        </div>
+
+        <div id="historyContainer" class="history-container">
+             <!-- Prompt history will be rendered here -->
+        </div>
+        
+        <footer>
+            <p>Built by Miz Causevic. <a href="https://www.linkedin.com/in/mirzacausevic/" target="_blank" rel="noopener noreferrer">Connect on LinkedIn</a>.</p>
+        </footer>
+
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const generateBtn = document.getElementById('generateBtn');
+            const surpriseBtn = document.getElementById('surpriseBtn');
+            const historyContainer = document.getElementById('historyContainer');
+            const selects = document.querySelectorAll('select');
+            
+            let promptHistory = [];
+
+            const renderHistory = () => {
+                historyContainer.innerHTML = '';
+                promptHistory.forEach(promptText => {
+                    const historyItem = document.createElement('div');
+                    historyItem.className = 'history-item';
+                    
+                    const pre = document.createElement('pre');
+                    pre.textContent = promptText;
+                    
+                    const copyBtn = document.createElement('button');
+                    copyBtn.className = 'copy-btn';
+                    copyBtn.textContent = 'Copy';
+                    
+                    copyBtn.addEventListener('click', () => {
+                        const textArea = document.createElement('textarea');
+                        textArea.value = promptText;
+                        document.body.appendChild(textArea);
+                        textArea.select();
+                        try {
+                            document.execCommand('copy');
+                            copyBtn.textContent = 'Copied!';
+                        } catch (err) {
+                            copyBtn.textContent = 'Failed!';
+                        }
+                        document.body.removeChild(textArea);
+
+                        setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 2000);
+                    });
+
+                    historyItem.appendChild(pre);
+                    historyItem.appendChild(copyBtn);
+                    historyContainer.appendChild(historyItem);
+                });
+            };
+
+            const generatePrompt = () => {
+                const persona = document.getElementById('persona').value;
+                const task = document.getElementById('task').value;
+                const format = document.getElementById('format').value;
+                const tone = document.getElementById('tone').value;
+                const topic = document.getElementById('topic').value.trim();
+                const constraints = document.getElementById('constraints').value.trim();
+                const useCoT = document.getElementById('chainOfThought').checked;
+
+                if (!topic) {
+                    // Using a custom message box instead of alert()
+                    const historyItem = document.createElement('div');
+                    historyItem.className = 'history-item';
+                    const pre = document.createElement('pre');
+                    pre.textContent = 'Please enter a topic or query before generating a prompt.';
+                    pre.style.color = 'var(--glow-color-1)';
+                    historyItem.appendChild(pre);
+                    historyContainer.innerHTML = '';
+                    historyContainer.appendChild(historyItem);
+                    return;
+                }
+
+                let finalPrompt = `[START PROMPT]\n\n`;
+                if (useCoT) {
+                    finalPrompt += `### INSTRUCTION\nFirst, think step-by-step and explain your reasoning. Then, provide the final answer based on the following criteria.\n\n`;
+                }
+                finalPrompt += `### PERSONA\n${persona}\n\n`;
+                finalPrompt += `### TASK\n${task}: "${topic}"\n\n`;
+                finalPrompt += `### FORMAT\n${format}\n\n`;
+                finalPrompt += `### TONE\n${tone}\n\n`;
+                if (constraints) {
+                    finalPrompt += `### CONSTRAINTS\n${constraints}\n\n`;
+                }
+                finalPrompt += `[END PROMPT]`;
+                
+                promptHistory.unshift(finalPrompt);
+                if (promptHistory.length > 3) {
+                    promptHistory.pop();
+                }
+                
+                renderHistory();
+            };
+
+            generateBtn.addEventListener('click', generatePrompt);
+
+            surpriseBtn.addEventListener('click', () => {
+                selects.forEach(select => {
+                    const randomIndex = Math.floor(Math.random() * select.options.length);
+                    select.selectedIndex = randomIndex;
+                });
+            });
+        });
+    </script>
+</body>
+</html>
